@@ -1,0 +1,13 @@
+{
+  "name": "citus-postgresql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Robert Scott Reis <reis.robert.s@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.4",
+    "highland": "^2.13.4",
+    "nodemon": "^1.18.11",
+    "pg": "^7.9.0"
+  }
+}

@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  master:
+    image: 'citusdata/citus:8.2.1'
+    env:
+      - POSTGRES_USER: 'postgres'
+    labels:
+      - 'com.citusdata.role=Master'
+    ports:
+      - 5432
+    volumes:
+      - './data:/data:cached'
+      - './db/setup.sql:/docker-entrypoint-initdb.d/setup.sql:cached'
+
+  worker_1: &worker
+    image: 'citusdata/citus:8.2.1'
+    depends_on:
+      - master
+    labels:
+      - 'com.citusdata.role=Worker'
+  worker_2: *worker
+  worker_3: *worker
+
+  manager:
+    image: 'citusdata/membership-manager:0.2.0'
+    depends_on:
+      - master
+    restart: 'always'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
