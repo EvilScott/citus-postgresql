@@ -34,6 +34,11 @@ function* ids (year, keywordCount, marketCount) {
 }
 
 module.exports = {
+  setupDistribution: async () => {
+    const sql = `SELECT create_distributed_table('results', 'keyword_id')`;
+    return PostgreSQL.execute(sql);
+  },
+
   generateFakeData: async (year, keywordCount, marketCount) => {
     return hl(ids(year, keywordCount, marketCount)).
       batch(BATCH_SIZE).

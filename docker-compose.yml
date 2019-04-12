@@ -16,7 +16,6 @@ services:
     ports:
       - 5432
     volumes:
-      - './data:/data:cached'
       - './db/setup.sql:/docker-entrypoint-initdb.d/setup.sql:cached'
 
   worker_1: &worker
@@ -44,7 +43,7 @@ services:
     environment:
       POSTGRES_USER: 'postgres'
     ports:
-      - 5555:5555
+      - 5556:5556
     restart: 'always'
     volumes:
       - 'node_modules:/app/node_modules:delegated'
