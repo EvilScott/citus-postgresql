@@ -1,9 +1,16 @@
 version: '3.3'
 services:
+  deps:
+    image: 'node:10.12'
+    volumes:
+      - './package.json:/package.json:cached'
+      - './yarn.lock:/yarn.lock:cached'
+      - 'node_modules:/node_modules:delegated'
+    working_dir: '/'
+    command: 'yarn install'
+
   master:
     image: 'citusdata/citus:8.2.1'
-    env:
-      - POSTGRES_USER: 'postgres'
     labels:
       - 'com.citusdata.role=Master'
     ports:
@@ -28,3 +35,23 @@ services:
     restart: 'always'
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
+
+  server:
+    image: 'node:10.12'
+    depends_on:
+      - deps
+      - master
+    environment:
+      POSTGRES_USER: 'postgres'
+    ports:
+      - 5555:5555
+    restart: 'always'
+    volumes:
+      - 'node_modules:/app/node_modules:delegated'
+      - './src:/app/src:cached'
+      - './package.json:/app/package.json:cached'
+    working_dir: '/app'
+    command: 'yarn run server'
+
+volumes:
+  node_modules:
